@@ -169,7 +169,31 @@ func max(x, y int) int {
 	return y
 }
 
-func main() {
+// 236. 二叉树的最近公共祖先
+func lowestCommonAncestor(root, p, q *TreeNode) *TreeNode {
+	// 1.结束条件
+	if root == nil {
+		return nil
+	}
+	if root == q || root == p {
+		return root
+	}
+
+	// 2.分段处理
+	left := lowestCommonAncestor(root.Left, p, q)
+	right := lowestCommonAncestor(root.Right, p, q)
+
+	// 3.合并结果
+	if left != nil && right != nil {
+		return root
+	}
+	if left != nil {
+		return left
+	}
+	return right	// 注意，降低圈复杂度
+}
+
+func main0729() {
 	nums := []int{2, 4, 3, 78, 4, 55, 12}
 	//result := MergeSort(nums)
 	result := QuickSort(nums)
