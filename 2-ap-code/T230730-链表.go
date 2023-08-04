@@ -23,7 +23,8 @@ package main
 	143. 重排链表
 	141. 环形链表
 	142. 环形链表2
-
+	234. 回文链表
+	138. 复制带随机指针的链表
 */
 
 type ListNode struct {
@@ -261,4 +262,64 @@ func detectCycle(head *ListNode) *ListNode {
 		fast = fast.Next.Next
 	}
 	return nil
+}
+
+// 234.回文链表--快慢指针找中点+翻转链表
+func isPalindrome(head *ListNode) bool {
+	if head == nil {
+		return true
+	}
+	slow := head
+	fast := head.Next
+	for fast != nil && fast.Next != nil { // 想清楚中点在哪
+		slow = slow.Next
+		fast = fast.Next.Next
+	}
+	tail := reverseList(slow.Next)
+	slow.Next = nil
+	for head != nil && tail != nil {
+		if head.Val != tail.Val {
+			return false
+		}
+		head = head.Next
+		tail = tail.Next
+	}
+	return true
+}
+
+type Node struct {
+	Val    int
+	Next   *Node
+	Random *Node
+}
+
+// 138.复制带随机指针的链表
+func copyRandomList(head *Node) *Node {
+	if head == nil {
+		return head
+	}
+	cur := head
+	for cur != nil { // 复制节点跟在后面
+		clone := &Node{Val: cur.Val, Next: cur.Next}
+		temp := cur.Next
+		cur.Next = clone
+		cur = temp
+	}
+	// 处理Random指针
+	cur = head
+	for cur != nil {
+		if cur.Random != nil {
+			cur.Next.Random = cur.Random.Next
+		}
+		cur = cur.Next.Next
+	}
+	// 分离两个链表
+	cur = head
+	cloneHead := cur.Next
+	for cur != nil && cur.Next != nil {
+		temp := cur.Next
+		cur.Next = temp.Next
+		cur = temp
+	}
+	return cloneHead
 }
